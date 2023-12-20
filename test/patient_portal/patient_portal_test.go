@@ -39,6 +39,7 @@ func TestPatientPortalTemplate(t *testing.T) {
 			&disruptors.ConsoleOnAll{},
 			&disruptors.FlowCollectorOnAll{},
 			&disruptors.MinAllows{},
+			&disruptors.SkipManifestCheck{},
 			// &disruptors.ClusterPermissions{},
 		},
 	)
