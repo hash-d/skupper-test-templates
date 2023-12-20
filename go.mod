@@ -4,7 +4,7 @@ go 1.19
 
 replace github.com/skupperproject/skupper => ../skupper-dh/
 
-require github.com/hash-d/frame2 v0.0.0-20231129200647-d24659c0aba4
+require github.com/hash-d/frame2 v0.0.0-20231220135216-d32d842faccf
 
 require (
 	cloud.google.com/go v0.65.0 // indirect
