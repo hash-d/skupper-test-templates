@@ -40,6 +40,8 @@ func TestPatientPortalTemplate(t *testing.T) {
 			&disruptors.FlowCollectorOnAll{},
 			&disruptors.MinAllows{},
 			&disruptors.SkipManifestCheck{},
+			&disruptors.PodSecurityAdmission{},
+			&disruptors.PSADeployment{},
 			// &disruptors.ClusterPermissions{},
 		},
 	)
