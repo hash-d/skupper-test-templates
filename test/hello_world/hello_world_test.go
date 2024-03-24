@@ -24,6 +24,8 @@ func TestHelloWorldTemplate(t *testing.T) {
 		&disruptors.ConsoleAuth{},
 		&disruptors.ConsoleOnAll{},
 		&disruptors.FlowCollectorOnAll{},
+		&disruptors.UpgradeAndFinalize{},
+		&disruptors.SkipManifestCheck{},
 	})
 
 	helloWorldDefault := &environment.HelloWorldDefault{
@@ -68,7 +70,7 @@ func TestHelloWorldTemplate(t *testing.T) {
 		MainSteps: []frame2.Step{
 			{
 				Name: "Expose frontend",
-				Modify: skupperexecute.SkupperExpose{
+				Modify: &skupperexecute.SkupperExpose{
 					Namespace: pub1,
 					Type:      "deployment",
 					Name:      "hello-world-frontend",
@@ -91,7 +93,7 @@ func TestHelloWorldTemplate(t *testing.T) {
 				ValidatorFinal: true,
 			}, {
 				Name: "Expose backend",
-				Modify: skupperexecute.SkupperExpose{
+				Modify: &skupperexecute.SkupperExpose{
 					Namespace: prv1,
 					Type:      "deployment",
 					Name:      "hello-world-backend",
