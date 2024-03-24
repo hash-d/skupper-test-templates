@@ -8,7 +8,7 @@ import (
 	frame2 "github.com/hash-d/frame2/pkg"
 	"github.com/hash-d/frame2/pkg/disruptors"
 	"github.com/hash-d/frame2/pkg/environment"
-	"github.com/hash-d/frame2/pkg/execute"
+	"github.com/hash-d/frame2/pkg/skupperexecute"
 	"github.com/hash-d/frame2/pkg/topology"
 )
 
@@ -27,7 +27,7 @@ func TestSimplestTemplate(t *testing.T) {
 		&disruptors.SkipManifestCheck{},
 	})
 
-	env := environment.JustSkupperDefault{
+	env := environment.JustSkupperSimple{
 		Name:         "simplest",
 		AutoTearDown: true,
 		Console:      true,
@@ -60,29 +60,29 @@ func TestSimplestTemplate(t *testing.T) {
 			{
 				ValidatorFinal: true,
 				Validators: []frame2.Validator{
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: pub,
 						Args:           []string{"version"},
 					},
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: pub,
 						Args:           []string{"status"},
 					},
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: pub,
-						Args:           []string{"network status"},
+						Args:           []string{"network", "status"},
 					},
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: prv,
 						Args:           []string{"version"},
 					},
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: prv,
 						Args:           []string{"status"},
 					},
-					&execute.CliSkupper{
+					&skupperexecute.CliSkupper{
 						ClusterContext: prv,
-						Args:           []string{"network status"},
+						Args:           []string{"network", "status"},
 					},
 				},
 			},
