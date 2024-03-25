@@ -26,6 +26,7 @@ func TestHelloWorldTemplate(t *testing.T) {
 		&disruptors.FlowCollectorOnAll{},
 		&disruptors.UpgradeAndFinalize{},
 		&disruptors.SkipManifestCheck{},
+		&disruptors.EdgeOnPrivate{},
 	})
 
 	helloWorldDefault := &environment.HelloWorldDefault{
