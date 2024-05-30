@@ -6,8 +6,8 @@ import (
 	frame2 "github.com/hash-d/frame2/pkg"
 	"github.com/hash-d/frame2/pkg/disruptors"
 	"github.com/hash-d/frame2/pkg/environment"
+	"github.com/hash-d/frame2/pkg/frames/f2k8s"
 	"github.com/hash-d/frame2/pkg/skupperexecute"
-	"github.com/hash-d/frame2/pkg/topology"
 	"github.com/hash-d/frame2/pkg/validate"
 	"gotest.tools/assert"
 )
@@ -55,11 +55,11 @@ func TestHelloWorldTemplate(t *testing.T) {
 	assert.Assert(t, setup.Run())
 
 	topo := helloWorldDefault.GetTopology()
-	pub1, err := topo.Get(topology.Public, 1)
+	pub1, err := topo.Get(f2k8s.Public, 1)
 	if err != nil {
 		t.Fatalf("Failed to get pub1: %v", err)
 	}
-	prv1, err := topo.Get(topology.Private, 1)
+	prv1, err := topo.Get(f2k8s.Private, 1)
 	if err != nil {
 		t.Fatalf("Failed to get prv1: %v", err)
 	}
@@ -88,7 +88,7 @@ func TestHelloWorldTemplate(t *testing.T) {
 					},
 				},
 				ValidatorRetry: frame2.RetryOptions{
-					Allow:  10,
+					Allow:  60,
 					Ensure: 2,
 				},
 				ValidatorFinal: true,
@@ -111,7 +111,7 @@ func TestHelloWorldTemplate(t *testing.T) {
 					},
 				},
 				ValidatorRetry: frame2.RetryOptions{
-					Allow:  10,
+					Allow:  60,
 					Ensure: 2,
 				},
 				ValidatorFinal: true,

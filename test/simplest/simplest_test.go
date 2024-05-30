@@ -8,8 +8,8 @@ import (
 	frame2 "github.com/hash-d/frame2/pkg"
 	"github.com/hash-d/frame2/pkg/disruptors"
 	"github.com/hash-d/frame2/pkg/environment"
+	"github.com/hash-d/frame2/pkg/frames/f2k8s"
 	"github.com/hash-d/frame2/pkg/skupperexecute"
-	"github.com/hash-d/frame2/pkg/topology"
 )
 
 func TestSimplestTemplate(t *testing.T) {
@@ -47,9 +47,9 @@ func TestSimplestTemplate(t *testing.T) {
 	assert.Assert(t, setup.Run())
 
 	// Get the namespaces
-	prv, err := env.Topo.Get(topology.Private, 1)
+	prv, err := env.Topo.Get(f2k8s.Private, 1)
 	assert.Assert(t, err)
-	pub, err := env.Topo.Get(topology.Public, 1)
+	pub, err := env.Topo.Get(f2k8s.Public, 1)
 	assert.Assert(t, err)
 
 	main := frame2.Phase{
@@ -61,28 +61,28 @@ func TestSimplestTemplate(t *testing.T) {
 				ValidatorFinal: true,
 				Validators: []frame2.Validator{
 					&skupperexecute.CliSkupper{
-						ClusterContext: pub,
-						Args:           []string{"version"},
+						F2Namespace: pub,
+						Args:        []string{"version"},
 					},
 					&skupperexecute.CliSkupper{
-						ClusterContext: pub,
-						Args:           []string{"status"},
+						F2Namespace: pub,
+						Args:        []string{"status"},
 					},
 					&skupperexecute.CliSkupper{
-						ClusterContext: pub,
-						Args:           []string{"network", "status"},
+						F2Namespace: pub,
+						Args:        []string{"network", "status"},
 					},
 					&skupperexecute.CliSkupper{
-						ClusterContext: prv,
-						Args:           []string{"version"},
+						F2Namespace: prv,
+						Args:        []string{"version"},
 					},
 					&skupperexecute.CliSkupper{
-						ClusterContext: prv,
-						Args:           []string{"status"},
+						F2Namespace: prv,
+						Args:        []string{"status"},
 					},
 					&skupperexecute.CliSkupper{
-						ClusterContext: prv,
-						Args:           []string{"network", "status"},
+						F2Namespace: prv,
+						Args:        []string{"network", "status"},
 					},
 				},
 			},
