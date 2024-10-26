@@ -74,17 +74,17 @@ func TestHelloWorldTemplate(t *testing.T) {
 				Modify: &skupperexecute.SkupperExpose{
 					Namespace: pub1,
 					Type:      "deployment",
-					Name:      "hello-world-frontend",
+					Name:      "frontend",
 					Ports:     []int{8080},
 				},
 				Validators: []frame2.Validator{
 					&validate.Curl{
 						Namespace: pub1,
-						Url:       "hello-world-frontend:8080",
+						Url:       "frontend:8080",
 					},
 					&validate.Curl{
 						Namespace: prv1,
-						Url:       "hello-world-frontend:8080",
+						Url:       "frontend:8080",
 					},
 				},
 				ValidatorRetry: frame2.RetryOptions{
@@ -97,17 +97,17 @@ func TestHelloWorldTemplate(t *testing.T) {
 				Modify: &skupperexecute.SkupperExpose{
 					Namespace: prv1,
 					Type:      "deployment",
-					Name:      "hello-world-backend",
+					Name:      "backend",
 					Ports:     []int{8080},
 				},
 				Validators: []frame2.Validator{
 					&validate.Curl{
 						Namespace: prv1,
-						Url:       "hello-world-backend:8080/api/hello",
+						Url:       "backend:8080/api/hello",
 					},
 					&validate.Curl{
 						Namespace: pub1,
-						Url:       "hello-world-backend:8080/api/hello",
+						Url:       "backend:8080/api/hello",
 					},
 				},
 				ValidatorRetry: frame2.RetryOptions{

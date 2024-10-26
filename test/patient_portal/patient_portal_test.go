@@ -12,6 +12,15 @@ import (
 	"gotest.tools/assert"
 )
 
+/*
+func init() {
+	null, _ := os.Open(os.DevNull)
+	os.Stdout = null
+	//	os.Stderr = null
+	log.SetOutput(null)
+}
+*/
+
 func TestPatientPortalTemplate(t *testing.T) {
 	// Every frame2 test has a root frame2.Run, that keeps the reference
 	// to the t *testing.T
@@ -43,6 +52,7 @@ func TestPatientPortalTemplate(t *testing.T) {
 			&disruptors.PodSecurityAdmission{},
 			&disruptors.PSADeployment{},
 			&disruptors.EdgeOnPrivate{},
+			&disruptors.AlternateSkupper{},
 			// &disruptors.ClusterPermissions{},
 		},
 	)
