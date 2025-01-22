@@ -1,15 +1,15 @@
 package simplest
 
 import (
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1/disruptor"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1/f2sk1environment"
 	"testing"
 
 	"gotest.tools/assert"
 
 	frame2 "github.com/hash-d/frame2/pkg"
-	"github.com/hash-d/frame2/pkg/disruptors"
-	"github.com/hash-d/frame2/pkg/environment"
 	"github.com/hash-d/frame2/pkg/frames/f2k8s"
-	"github.com/hash-d/frame2/pkg/skupperexecute"
 )
 
 func TestSimplestTemplate(t *testing.T) {
@@ -19,15 +19,15 @@ func TestSimplestTemplate(t *testing.T) {
 	defer r.Finalize()
 
 	r.AllowDisruptors([]frame2.Disruptor{
-		&disruptors.MixedVersionVan{},
-		&disruptors.NoConsole{},
-		&disruptors.NoFlowCollector{},
-		&disruptors.NoHttp{},
-		&disruptors.UpgradeAndFinalize{},
-		&disruptors.SkipManifestCheck{},
+		&disruptor.MixedVersionVan{},
+		&disruptor.NoConsole{},
+		&disruptor.NoFlowCollector{},
+		&disruptor.NoHttp{},
+		&disruptor.UpgradeAndFinalize{},
+		&disruptor.SkipManifestCheck{},
 	})
 
-	env := environment.JustSkupperSimple{
+	env := f2sk1environment.JustSkupperSimple{
 		Name:         "simplest",
 		AutoTearDown: true,
 		Console:      true,
@@ -60,27 +60,27 @@ func TestSimplestTemplate(t *testing.T) {
 			{
 				ValidatorFinal: true,
 				Validators: []frame2.Validator{
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: pub,
 						Args:        []string{"version"},
 					},
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: pub,
 						Args:        []string{"status"},
 					},
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: pub,
 						Args:        []string{"network", "status"},
 					},
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: prv,
 						Args:        []string{"version"},
 					},
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: prv,
 						Args:        []string{"status"},
 					},
-					&skupperexecute.CliSkupper{
+					&f2skupper1.CliSkupper{
 						F2Namespace: prv,
 						Args:        []string{"network", "status"},
 					},

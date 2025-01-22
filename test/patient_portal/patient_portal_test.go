@@ -4,10 +4,16 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/hash-d/frame2/pkg/frames/f2k8s/disruptor"
+	disruptor3 "github.com/hash-d/frame2/pkg/frames/f2ocp/disruptor"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1"
+	disruptor2 "github.com/hash-d/frame2/pkg/frames/f2skupper1/disruptor"
+	disruptor4 "github.com/hash-d/frame2/pkg/frames/f2skupper1/disruptor"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1/f2sk1deploy"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1/f2sk1environment"
+
 	frame2 "github.com/hash-d/frame2/pkg"
-	"github.com/hash-d/frame2/pkg/deploy"
 	"github.com/hash-d/frame2/pkg/disruptors"
-	"github.com/hash-d/frame2/pkg/environment"
 	"github.com/hash-d/frame2/pkg/frames/f2k8s"
 	"gotest.tools/assert"
 )
@@ -39,20 +45,20 @@ func TestPatientPortalTemplate(t *testing.T) {
 	// will be allowed to all tests.
 	r.AllowDisruptors(
 		[]frame2.Disruptor{
-			&disruptors.UpgradeAndFinalize{},
-			&disruptors.MixedVersionVan{},
-			&disruptors.DeploymentConfigBlindly{},
-			&disruptors.NoConsole{},
-			&disruptors.NoFlowCollector{},
-			&disruptors.NoHttp{},
-			&disruptors.ConsoleOnAll{},
-			&disruptors.FlowCollectorOnAll{},
+			&disruptor2.UpgradeAndFinalize{},
+			&disruptor2.MixedVersionVan{},
+			&disruptor3.DeploymentConfigBlindly{},
+			&disruptor2.NoConsole{},
+			&disruptor2.NoFlowCollector{},
+			&disruptor2.NoHttp{},
+			&disruptor2.ConsoleOnAll{},
+			&disruptor2.FlowCollectorOnAll{},
 			&disruptors.MinAllows{},
-			&disruptors.SkipManifestCheck{},
-			&disruptors.PodSecurityAdmission{},
-			&disruptors.PSADeployment{},
-			&disruptors.EdgeOnPrivate{},
-			&disruptors.AlternateSkupper{},
+			&disruptor2.SkipManifestCheck{},
+			&disruptor.PodSecurityAdmission{},
+			&disruptor.PSADeployment{},
+			&disruptor2.EdgeOnPrivate{},
+			&disruptor4.AlternateSkupper{},
 			// &disruptors.ClusterPermissions{},
 		},
 	)
@@ -66,7 +72,7 @@ func TestPatientPortalTemplate(t *testing.T) {
 	// As an environment action, this will create namespaces, install
 	// Skupper on them, link them, install the application and expose
 	// it via Skupper.
-	env := environment.PatientPortalDefault{
+	env := f2sk1environment.PatientPortalDefault{
 		AutoTearDown:  true,
 		EnableConsole: true,
 	}
@@ -116,13 +122,13 @@ func TestPatientPortalTemplate(t *testing.T) {
 				Doc: "Install Patient Portal monitors",
 				Modify: &frame2.DefaultMonitor{
 					Validators: map[string]frame2.Validator{
-						"frontend-health": &deploy.PatientFrontendHealth{
+						"frontend-health": &f2sk1deploy.PatientFrontendHealth{
 							Namespace: front_ns,
 						},
-						"database-ping": &deploy.PatientDbPing{
+						"database-ping": &f2sk1deploy.PatientDbPing{
 							Namespace: front_ns,
 						},
-						"payment-token": &deploy.PatientValidatePayment{
+						"payment-token": &f2sk1deploy.PatientValidatePayment{
 							Namespace: front_ns,
 						},
 					},
@@ -138,17 +144,55 @@ func TestPatientPortalTemplate(t *testing.T) {
 		Doc:    "Replace these by your modifications and tests",
 		MainSteps: []frame2.Step{
 			{
+				Doc: "check status commands",
 				Validators: []frame2.Validator{
-					&deploy.PatientValidatePayment{
+					&f2skupper1.CliSkupper{
+						F2Namespace: front_ns,
+						Args:        []string{"version"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: front_ns,
+						Args:        []string{"status"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: front_ns,
+						Args:        []string{"network", "status"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: front_ns,
+						Args:        []string{"service", "status"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: back_ns,
+						Args:        []string{"version"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: back_ns,
+						Args:        []string{"status"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: back_ns,
+						Args:        []string{"network", "status"},
+					},
+					&f2skupper1.CliSkupper{
+						F2Namespace: back_ns,
+						Args:        []string{"service", "status"},
+					},
+				},
+				ValidatorFinal: true,
+			}, {
+				Doc: "Check PatientPortal components",
+				Validators: []frame2.Validator{
+					&f2sk1deploy.PatientValidatePayment{
 						Namespace: front_ns,
 					},
-					&deploy.PatientFrontendHealth{
+					&f2sk1deploy.PatientFrontendHealth{
 						Namespace: front_ns,
 					},
-					&deploy.PatientDbPing{
+					&f2sk1deploy.PatientDbPing{
 						Namespace: front_ns,
 					},
-					&deploy.PatientValidatePayment{
+					&f2sk1deploy.PatientValidatePayment{
 						Namespace: back_ns,
 					},
 					// frontend cannot be tested from backend, as not skupper-exposed
