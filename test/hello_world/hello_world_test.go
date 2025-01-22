@@ -1,14 +1,14 @@
 package hello_world
 
 import (
+	"github.com/hash-d/frame2/pkg/frames/f2k8s/disruptor"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1"
+	disruptor2 "github.com/hash-d/frame2/pkg/frames/f2skupper1/disruptor"
+	"github.com/hash-d/frame2/pkg/frames/f2skupper1/f2sk1environment"
 	"testing"
 
 	frame2 "github.com/hash-d/frame2/pkg"
-	"github.com/hash-d/frame2/pkg/disruptors"
-	"github.com/hash-d/frame2/pkg/environment"
 	"github.com/hash-d/frame2/pkg/frames/f2k8s"
-	"github.com/hash-d/frame2/pkg/skupperexecute"
-	"github.com/hash-d/frame2/pkg/validate"
 	"gotest.tools/assert"
 )
 
@@ -19,17 +19,17 @@ func TestHelloWorldTemplate(t *testing.T) {
 	defer r.Finalize()
 
 	r.AllowDisruptors([]frame2.Disruptor{
-		&disruptors.PodSecurityAdmission{},
-		&disruptors.PSADeployment{},
-		&disruptors.ConsoleAuth{},
-		&disruptors.ConsoleOnAll{},
-		&disruptors.FlowCollectorOnAll{},
-		&disruptors.UpgradeAndFinalize{},
-		&disruptors.SkipManifestCheck{},
-		&disruptors.EdgeOnPrivate{},
+		&disruptor.PodSecurityAdmission{},
+		&disruptor.PSADeployment{},
+		&disruptor2.ConsoleAuth{},
+		&disruptor2.ConsoleOnAll{},
+		&disruptor2.FlowCollectorOnAll{},
+		&disruptor2.UpgradeAndFinalize{},
+		&disruptor2.SkipManifestCheck{},
+		&disruptor2.EdgeOnPrivate{},
 	})
 
-	helloWorldDefault := &environment.HelloWorldDefault{
+	helloWorldDefault := &f2sk1environment.HelloWorldDefault{
 		AutoTearDown: true,
 	}
 
@@ -71,18 +71,18 @@ func TestHelloWorldTemplate(t *testing.T) {
 		MainSteps: []frame2.Step{
 			{
 				Name: "Expose frontend",
-				Modify: &skupperexecute.SkupperExpose{
+				Modify: &f2skupper1.SkupperExpose{
 					Namespace: pub1,
 					Type:      "deployment",
 					Name:      "frontend",
 					Ports:     []int{8080},
 				},
 				Validators: []frame2.Validator{
-					&validate.Curl{
+					&f2k8s.Curl{
 						Namespace: pub1,
 						Url:       "frontend:8080",
 					},
-					&validate.Curl{
+					&f2k8s.Curl{
 						Namespace: prv1,
 						Url:       "frontend:8080",
 					},
@@ -94,18 +94,18 @@ func TestHelloWorldTemplate(t *testing.T) {
 				ValidatorFinal: true,
 			}, {
 				Name: "Expose backend",
-				Modify: &skupperexecute.SkupperExpose{
+				Modify: &f2skupper1.SkupperExpose{
 					Namespace: prv1,
 					Type:      "deployment",
 					Name:      "backend",
 					Ports:     []int{8080},
 				},
 				Validators: []frame2.Validator{
-					&validate.Curl{
+					&f2k8s.Curl{
 						Namespace: prv1,
 						Url:       "backend:8080/api/hello",
 					},
-					&validate.Curl{
+					&f2k8s.Curl{
 						Namespace: pub1,
 						Url:       "backend:8080/api/hello",
 					},
