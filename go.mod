@@ -2,10 +2,10 @@ module github.com/hash-d/skupper-test-templates
 
 go 1.22
 
-//replace github.com/hash-d/frame2 => ../frame2
+// replace github.com/hash-d/frame2 => ../frame2
 
 require (
-	github.com/hash-d/frame2 v0.2.0
+	github.com/hash-d/frame2 v0.2.1
 	gotest.tools v2.2.0+incompatible
 )
 

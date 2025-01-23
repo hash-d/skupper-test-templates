@@ -144,6 +144,27 @@ func TestPatientPortalTemplate(t *testing.T) {
 		Doc:    "Replace these by your modifications and tests",
 		MainSteps: []frame2.Step{
 			{
+				Doc: "Check PatientPortal components",
+				Validators: []frame2.Validator{
+					&f2sk1deploy.PatientValidatePayment{
+						Namespace: front_ns,
+					},
+					&f2sk1deploy.PatientFrontendHealth{
+						Namespace: front_ns,
+					},
+					&f2sk1deploy.PatientDbPing{
+						Namespace: front_ns,
+					},
+					&f2sk1deploy.PatientValidatePayment{
+						Namespace: back_ns,
+					},
+					// frontend cannot be tested from backend, as not skupper-exposed
+					//
+					// db currently cannot be tested from backend, as it depends on a
+					// frontend deployment, to use its pg_isalive
+				},
+				ValidatorFinal: true,
+			}, {
 				Doc: "check status commands",
 				Validators: []frame2.Validator{
 					&f2skupper1.CliSkupper{
@@ -178,27 +199,6 @@ func TestPatientPortalTemplate(t *testing.T) {
 						F2Namespace: back_ns,
 						Args:        []string{"service", "status"},
 					},
-				},
-				ValidatorFinal: true,
-			}, {
-				Doc: "Check PatientPortal components",
-				Validators: []frame2.Validator{
-					&f2sk1deploy.PatientValidatePayment{
-						Namespace: front_ns,
-					},
-					&f2sk1deploy.PatientFrontendHealth{
-						Namespace: front_ns,
-					},
-					&f2sk1deploy.PatientDbPing{
-						Namespace: front_ns,
-					},
-					&f2sk1deploy.PatientValidatePayment{
-						Namespace: back_ns,
-					},
-					// frontend cannot be tested from backend, as not skupper-exposed
-					//
-					// db currently cannot be tested from backend, as it depends on a
-					// frontend deployment, to use its pg_isalive
 				},
 				ValidatorFinal: true,
 			},
